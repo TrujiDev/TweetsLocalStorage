@@ -5,12 +5,12 @@ let tweets = [];
 eventListeners();
 
 function eventListeners() {
-    form.addEventListener('submit', addTweet);
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        tweets = JSON.parse(localStorage.getItem('tweets')) || [];
-        generateHtml();
-    });
+	form.addEventListener('submit', addTweet);
+
+	document.addEventListener('DOMContentLoaded', () => {
+		tweets = JSON.parse(localStorage.getItem('tweets')) || [];
+		generateHtml();
+	});
 }
 
 function addTweet(event) {
@@ -25,22 +25,22 @@ function addTweet(event) {
 
 	const tweetObj = {
 		id: Math.random().toString(36).substring(2, 10),
-		tweet
+		tweet,
 	};
 
 	tweets = [...tweets, tweetObj];
 
-    generateHtml();
-    
-    form.reset();
+	generateHtml();
+
+	form.reset();
 }
 
 function showError(error) {
 	const errorMessage = document.createElement('P');
 	errorMessage.textContent = error;
-    errorMessage.classList.add('error');
-    
-    const tweet = document.querySelector('#tweet');
+	errorMessage.classList.add('error');
+
+	const tweet = document.querySelector('#tweet');
 	tweet.insertAdjacentElement('afterend', errorMessage);
 
 	setTimeout(() => {
@@ -53,17 +53,31 @@ function generateHtml() {
 
 	if (tweets.length > 0) {
 		tweets.forEach(tweet => {
+			const btnDelete = document.createElement('A');
+			btnDelete.classList.add('delete-tweet');
+			btnDelete.textContent = 'X';
+			btnDelete.onclick = () => {
+				deleteTweet(tweet.id);
+			};
+
 			const li = document.createElement('LI');
 			li.textContent = tweet.tweet;
+
+			li.appendChild(btnDelete);
 			listTweets.appendChild(li);
 		});
-    }
-    
-    syncstorage();
+	}
+
+	syncstorage();
 }
 
 function syncstorage() {
-    localStorage.setItem('tweets', JSON.stringify(tweets));
+	localStorage.setItem('tweets', JSON.stringify(tweets));
+}
+
+function deleteTweet(id) {
+	tweets = tweets.filter(tweet => tweet.id !== id);
+	generateHtml();
 }
 
 function cleanHtml() {
