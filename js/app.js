@@ -5,7 +5,12 @@ let tweets = [];
 eventListeners();
 
 function eventListeners() {
-	form.addEventListener('submit', addTweet);
+    form.addEventListener('submit', addTweet);
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        tweets = JSON.parse(localStorage.getItem('tweets')) || [];
+        generateHtml();
+    });
 }
 
 function addTweet(event) {
@@ -25,7 +30,9 @@ function addTweet(event) {
 
 	tweets = [...tweets, tweetObj];
 
-	generateHtml();
+    generateHtml();
+    
+    form.reset();
 }
 
 function showError(error) {
@@ -50,7 +57,13 @@ function generateHtml() {
 			li.textContent = tweet.tweet;
 			listTweets.appendChild(li);
 		});
-	}
+    }
+    
+    syncstorage();
+}
+
+function syncstorage() {
+    localStorage.setItem('tweets', JSON.stringify(tweets));
 }
 
 function cleanHtml() {
